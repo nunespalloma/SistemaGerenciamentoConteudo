@@ -28,17 +28,44 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- adicionando a dependencia para possibilitar criar uma Rest API -->
+		<!-- adicionando a dependência para possibilitar criar uma Rest API -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- adicionando a dependencia para biblioteca que, entre outros, gera get e set automaticos -->
+		<!-- adicionando a dependência para biblioteca que, entre outros, gera get e set automaticos -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- adicionando a dependência para o JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- adicionando a dependência para o Hibernate, que implementação o JPA -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.4.8.Final</version>
+		</dependency>
+
+		<!-- adicionando a dependência para o Javax Persistence API -->
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>javax.persistence-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<!-- adicionando a dependência para o conector JDBC -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
 		</dependency>
 
 	</dependencies>

@@ -5,31 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Getter //criando os metodos gets e os deixando ocultos
 @Setter //criando os metodos sets e os deixando ocultos
 @NoArgsConstructor //criando o construtor vazio e o deixando oculto
 @AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
 @Entity //transformando essa classe em uma entidade JPA
-public class Edicao {
+public class Time {
     @Id
     @GeneratedValue
-    private long id;
-    private int numero;
-    private int ano;
-    private Date dataInicial;
-    private Date dataFinal;
-    private String cidade;
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Evento evento;
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Usuario organizador;
-    @OneToMany
-    @JoinColumn(name = "id")
-    private List<Atividade> atividades;
+    private int id;
+    private int hora;
+    private int minuto;
+    private int segundo;
 }
