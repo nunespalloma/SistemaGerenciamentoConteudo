@@ -20,4 +20,5 @@ public class Atividade {
     private Date data;
     private Time horarioInicial;
     private Time horarioFinal;
+    private Espaco local;
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Getter //criando os metodos gets e os deixando ocultos
 @Setter //criando os metodos sets e os deixando ocultos
@@ -16,5 +16,5 @@ public class Espaco {
     private String nome;
     private String localizacao;
     private int capacidade;
-    private ArrayList<String> recursos = new ArrayList<> ();
+    private List<String> recursos;
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter //criando os metodos gets e os deixando ocultos
 @Setter //criando os metodos sets e os deixando ocultos
@@ -18,4 +19,7 @@ public class Edicao {
     private Date dataInicial;
     private Date dataFinal;
     private String cidade;
+    private Evento evento;
+    private Usuario organizador;
+    private List<Atividade> atividades;
 }
