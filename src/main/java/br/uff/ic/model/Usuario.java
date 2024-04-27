@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Getter //criando os metodos gets e os deixando ocultos
@@ -14,14 +14,22 @@ import java.util.List;
 @AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
 @Entity //transformando essa classe em uma entidade JPA
 public class Usuario {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String login;
+
     private String email;
+
     private String nome;
+
     private String afiliacao;
-    @OneToMany
-    @JoinColumn(name = "id")
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Atividade> atividadesFavoritas;
+
+    @OneToOne(mappedBy = "organizador", cascade = CascadeType.ALL)
+    private Edicao edicao;
 }

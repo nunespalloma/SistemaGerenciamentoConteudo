@@ -47,25 +47,11 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- adicionando a dependência para o Hibernate, que implementação o JPA -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.4.8.Final</version>
-		</dependency>
-
-		<!-- adicionando a dependência para o Javax Persistence API -->
-		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>javax.persistence-api</artifactId>
-			<version>2.2</version>
-		</dependency>
-
 		<!-- adicionando a dependência para o conector JDBC -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<version>8.0.33</version>
 		</dependency>
 
 	</dependencies>
