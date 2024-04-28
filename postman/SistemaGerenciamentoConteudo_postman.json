@@ -1,0 +1,640 @@
+{
+	"info": {
+		"_postman_id": "197cc329-eb24-4fa9-ab4c-215b406ffc03",
+		"name": "SistemaGerenciamentoConteudo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34429363"
+	},
+	"item": [
+		{
+			"name": "UsuarioController",
+			"item": [
+				{
+					"name": "criarUsuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"nunespalloma\",\r\n    \"email\": \"pallomanunes@id.uff.br\",\r\n    \"nome\": \"Palloma Machado\",\r\n    \"afiliacao\": \"teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/UsuarioController/criarUsuario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"UsuarioController",
+								"criarUsuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarUsuario",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"nunespalloma\",\r\n    \"email\": \"pallomanunes@id.uff.br\",\r\n    \"nome\": \"Palloma Machado\",\r\n    \"afiliacao\": \"testeAlterando\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/UsuarioController/alterarUsuario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"UsuarioController",
+								"alterarUsuario",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lerUsuario",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/UsuarioController/lerUsuario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"UsuarioController",
+								"lerUsuario",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarUsuario",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/UsuarioController/deletarUsuario/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"UsuarioController",
+								"deletarUsuario",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarUsuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/UsuarioController/listarUsuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"UsuarioController",
+								"listarUsuarios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EventoController",
+			"item": [
+				{
+					"name": "criarEvento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Evento Teste\",\r\n    \"sigla\": \"ET\",\r\n    \"descricao\": \"Evento para testar Endpoint de criação de eventos.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EventoController/criarEvento",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EventoController",
+								"criarEvento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarEvento",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Evento Teste Alterando\",\r\n    \"sigla\": \"ETA\",\r\n    \"descricao\": \"Alterando - Evento para testar Endpoint de criação de eventos.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EventoController/alterarEvento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EventoController",
+								"alterarEvento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lerEvento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EventoController/lerEvento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EventoController",
+								"lerEvento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarEventos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EventoController/listarEventos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EventoController",
+								"listarEventos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarEvento",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EventoController/deletarEvento/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EventoController",
+								"deletarEvento",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EspacoController",
+			"item": [
+				{
+					"name": "criarEspaco",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Lab 401\",\r\n    \"localizacao\": \"4 anadar\",\r\n    \"capacidade\": 33,\r\n    \"recursos\": \"computador, cadeira, mesa.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EspacoController/criarEspaco",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EspacoController",
+								"criarEspaco"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarEspaco",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Lab 401\",\r\n    \"localizacao\": \"4 anadar\",\r\n    \"capacidade\": 30,\r\n    \"recursos\": \"computador, cadeira, mesa.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EspacoController/alterarEspaco/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EspacoController",
+								"alterarEspaco",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lerEspaco",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EspacoController/lerEspaco/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EspacoController",
+								"lerEspaco",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarEspacos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EspacoController/listarEspacos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EspacoController",
+								"listarEspacos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarEspaco",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EspacoController/deletarEspaco/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EspacoController",
+								"deletarEspaco",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EdicaoController",
+			"item": [
+				{
+					"name": "criarEdicao",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"numero\": 1,\r\n    \"ano\": 2024,\r\n    \"dataInicial\": \"2024-04-29\",\r\n    \"dataFinal\": \"2024-05-03\",\r\n    \"cidade\": \"Rio de Janeiro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EdicaoController/criarEdicao",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EdicaoController",
+								"criarEdicao"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarEdicao",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"numero\": \"1\",\r\n    \"ano\": \"2024\",\r\n    \"dataInicial\": \"2024-04-29\",\r\n    \"dataFinal\": \"2024-05-03\",\r\n    \"cidade\": \"Niterói\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/EdicaoController/alterarEdicao/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EdicaoController",
+								"alterarEdicao",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lerEdicao",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EdicaoController/lerEdicao/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EdicaoController",
+								"lerEdicao",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarEdicoes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EdicaoController/listarEdicoes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EdicaoController",
+								"listarEdicoes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarEdicao",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/EdicaoController/deletarEdicao/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"EdicaoController",
+								"deletarEdicao",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AtividadeController",
+			"item": [
+				{
+					"name": "criarAtividade",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"A importância de aprender JPA\",\r\n    \"tipo\": \"PALESTRA\",\r\n    \"descricao\": \"JPA auxilia na persistência de dados, com isso serão abordada as raízes dessa importância.\",\r\n    \"data\": \"2024-04-29\",\r\n    \"horarioInicial\": \"2024-04-29T20:00:00.000\",\r\n    \"horarioFinal\": \"2024-04-29T21:30:00.000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/AtividadeController/criarAtividade",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"AtividadeController",
+								"criarAtividade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "alterarAtividade",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Alterando - A importância de aprender JPA\",\r\n    \"tipo\": \"PALESTRA\",\r\n    \"descricao\": \"JPA auxilia na persistência de dados, com isso serão abordada as raízes dessa importância.\",\r\n    \"data\": \"2024-04-29\",\r\n    \"horarioInicial\": \"2024-04-29T20:00:00.0000\",\r\n    \"horarioFinal\": \"2024-04-29T21:30:00.000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/AtividadeController/alterarAtividade/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"AtividadeController",
+								"alterarAtividade",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "lerAtividade",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/AtividadeController/lerAtividade/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"AtividadeController",
+								"lerAtividade",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listarAtividades",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/AtividadeController/listarAtividades",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"AtividadeController",
+								"listarAtividades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletarAtividade",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/AtividadeController/deletarAtividade/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"AtividadeController",
+								"deletarAtividade",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
