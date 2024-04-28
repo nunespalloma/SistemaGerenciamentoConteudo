@@ -27,8 +27,8 @@ public class UsuarioController {
     public Usuario lerUsuario(@PathVariable Long id){ //@PathVariable é a anotação usada para vincular o valor do ID do
         // usuário fornecido na solicitação à variável id no método
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id)); //método que lança uma
-        //exceção RuntimeException c/ mensagem indicando que o usuário não foi encontrado, caso o id nao seja encontrado
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + id)); //método que lança
+        // exceção RuntimeException c/ mensagem indicando que usuário não foi encontrado, caso id nao seja encontrado
     }
 
     @GetMapping("/listarUsuarios")
