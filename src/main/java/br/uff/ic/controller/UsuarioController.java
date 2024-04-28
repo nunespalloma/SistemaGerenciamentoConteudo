@@ -1,47 +1,50 @@
 package br.uff.ic.controller;
 
 import br.uff.ic.model.Usuario;
-import br.uff.ic.repository.Repositorio;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import br.uff.ic.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController //Transformando essa classe em uma Controladora Rest, ou seja, em uma "servlet"
 @RequestMapping("/UsuarioController") // /usuarioController é o nome/endereço dessa Controladora
 public class UsuarioController {
 
-    private Repositorio repositorio;
+    @Autowired //faz a implementação dos métodos que o repositorio importou do JPARepository e constroi o objeto oara
+    // mim, ex: faz o = new Repositorio(), e faz outras implementações necessarias automaticamente
+    private UsuarioRepository usuarioRepository;
 
-    @PostMapping("/criarUsuario") //Endpoint que utiliza método POST p/ criar Usuário de acordo com parametros recebidos
-    public void criarUsuario (String login, String email, String nome, String afiliação){
-        Usuario usuario = new Usuario();
-        usuario.setLogin(login);
-        usuario.setEmail(email);
-        usuario.setNome(nome);
-        usuario.setAfiliacao(afiliação);
-        repositorio.save(usuario);
+    @PostMapping("/criarUsuario") //Endpoint que utiliza método POST p/ criar Usuário de acordo com usuário recebido
+    public Usuario criarUsuario (@RequestBody Usuario usuario){ //@RequestBody serve para o Spring ler o corpo da
+        // solicitação HTTP, que normalmente contém dados JSON ou XML, e automaticamente converter esses dados
+        // em um objeto Java correspondente
+        return usuarioRepository.save(usuario);
     }
 
-    @PostMapping("/lerUsuario") //Endpoint que utiliza método POST p/ ler um Usuário de acordo com o id recebido
-    public void lerUsuario(long id){
-        //Usuario usuario = new Usuario();
-        //procurar usuario no banco de dados
-        //return usuario;
+    @GetMapping("/lerUsuario/{id}") //Endpoint que utiliza método POST p/ ler um Usuário de acordo com o id recebido
+    // em {id} na solicitação do endpoint
+    public Usuario lerUsuario(@PathVariable Long id){ //@PathVariable é a anotação usada para vincular o valor do ID do
+        // usuário fornecido na solicitação à variável id no método
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id)); //método que lança uma
+        //exceção RuntimeException c/ mensagem indicando que o usuário não foi encontrado, caso o id nao seja encontrado
     }
 
-    @PostMapping("/listarUsuarios")
-    public void listarUsuarios(){
-
+    @GetMapping("/listarUsuarios")
+    public List<Usuario> listarUsuarios(){
+        return usuarioRepository.findAll();
     }
 
-    @PostMapping("/alterarUsuario")
-    public void alterarUsuario(long id){
-
+    @PutMapping("/alterarUsuario/{id}")
+    public Usuario alterarUsuario(@PathVariable Long id, @RequestBody Usuario usuario){
+        usuario.setId(id);//nao entendi
+        return usuarioRepository.save(usuario);
     }
 
-    @PostMapping("/deletarUsuario")
-    public void deletarUsuario(long id){
-
+    @DeleteMapping("/deletarUsuario/{id}")
+    public void deletarUsuario(@PathVariable long id){
+        usuarioRepository.deleteById(id);
     }
 
 }
