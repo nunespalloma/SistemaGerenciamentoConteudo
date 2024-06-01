@@ -25,6 +25,6 @@ public class Evento {
 
     private String descricao;
 
-    @OneToOne(mappedBy = "evento", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
     private Edicao edicao;
 }
