@@ -8,11 +8,12 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import java.util.List;
 
-@Getter //criando os metodos gets e os deixando ocultos
-@Setter //criando os metodos sets e os deixando ocultos
-@NoArgsConstructor //criando o construtor vazio e o deixando oculto
-@AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
-@Entity //transformando essa classe em uma entidade JPA
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+
+@Entity
 public class Espaco {
 
     @Id
@@ -28,6 +29,6 @@ public class Espaco {
 
     private String recursos;
 
-    @OneToOne(mappedBy = "local",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "espaco",cascade = CascadeType.ALL)
     private Atividade atividade;
 }

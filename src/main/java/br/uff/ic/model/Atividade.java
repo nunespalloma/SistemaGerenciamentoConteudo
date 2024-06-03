@@ -1,46 +1,46 @@
 package br.uff.ic.model;
 
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
-@Getter //criando os metodos gets e os deixando ocultos
-@Setter //criando os metodos sets e os deixando ocultos
-@NoArgsConstructor //criando o construtor vazio e o deixando oculto
-@AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
-@Entity //transformando essa classe em uma entidade JPA
-public class Atividade {
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 
+@Entity
+public class Atividade {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//estrategia para o ID ser criado ordenado ex 1, 2, 3 etc
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String nome;
 
-    private Tipo tipo;
+    @Enumerated(EnumType.STRING)
+    private TipoAtividade tipo;
 
     private String descricao;
 
-    @Temporal(TemporalType.DATE)//Como a classe Date pega tudo (data, hora, min,etc), usamos esse @Temporal para
-    // especificar para o banco exatamente o que eu vou guardar desse dado
-    private Date data;
+    @Temporal(TemporalType.DATE)
+    private LocalDate data;
 
     @Temporal(TemporalType.TIME)
-    private Date horarioInicial;
+    private LocalTime horarioInicial;
 
     @Temporal(TemporalType.TIME)
-    private Date horarioFinal;
+    private LocalTime horarioFinal;
 
-    @OneToOne //relação entre tabelas
-    @JoinColumn(name = "espaco_id") //nome da chave estrangeira
-    private Espaco local;
+    @OneToOne
+    @JoinColumn(name = "espaco_id")
+    private Espaco espaco;
 
     @ManyToOne
     @JoinColumn(name = "edicao_id")
