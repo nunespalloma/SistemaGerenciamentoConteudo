@@ -22,7 +22,7 @@ public class EspacoController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Espaço criado com sucesso"),
                     @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-                    @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
     @PostMapping("/criarEspaco")
     public Espaco criarEspaco (@RequestBody Espaco espaco){
