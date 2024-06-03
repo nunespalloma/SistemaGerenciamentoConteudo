@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Getter //criando os metodos gets e os deixando ocultos
 @Setter //criando os metodos sets e os deixando ocultos
 @NoArgsConstructor //criando o construtor vazio e o deixando oculto
@@ -25,6 +27,6 @@ public class Evento {
 
     private String descricao;
 
-    @OneToOne(mappedBy = "evento", cascade = CascadeType.ALL)
-    private Edicao edicao;
+    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+    private List<Edicao> edicoes;
 }

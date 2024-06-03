@@ -32,7 +32,7 @@ public class Edicao {
 
     private String cidade;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "evento_id")
     private Evento evento;
 

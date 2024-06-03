@@ -119,9 +119,9 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
                        @ApiResponse(responseCode = "404", description = "Edição não encontrada")
                })
-    @PutMapping("/configurarOrganizador/{id}")
-    public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long usuario){
-        //Entrada: Receber uma edição e um usuário;
+    @PutMapping("/configurarOrganizador/{id}/{idUsuario}")
+    public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long idUsuario){
+        //Entrada: Receber uma edição e um usuário;usuario
         //Saída: Efetuar o registro de um usuário como organizador do evento;
         //Restição: Este endpoint só pode ser utilizado pelo Administrador.
 
