@@ -2,6 +2,8 @@ package br.uff.ic.controller;
 
 import br.uff.ic.model.Usuario;
 import br.uff.ic.repository.UsuarioRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,13 @@ public class UsuarioController {
     // mim, ex: faz o = new Repositorio(), e faz outras implementações necessarias automaticamente
     private UsuarioRepository usuarioRepository;
 
+    @Operation(summary = "Cadastrar novo Usuário",
+            description = "Cadastra um novo usuário no banco de dados do sistema. Requer um objeto de Edição no "
+                    + "corpo da requisição.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "usuário criado com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            })
     @PostMapping("/criarUsuario") //Endpoint que utiliza método POST p/ criar Usuário de acordo com usuário recebido
     public Usuario criarUsuario (@RequestBody Usuario usuario){ //@RequestBody serve para o Spring ler o corpo da
         // solicitação HTTP, que normalmente contém dados JSON ou XML, e automaticamente converter esses dados
