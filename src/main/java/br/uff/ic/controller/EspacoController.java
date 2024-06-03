@@ -10,16 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/espacos")
+@RequestMapping("/espaco")
 public class EspacoController {
 
     @Autowired
     private EspacoRepository espacoRepository;
-
-    @PostMapping("/cadastrar")
-    public Espaco cadastrarEspaco(@RequestBody Espaco obj) {
-        return espacoRepository.save(obj);
-    }
 
     @Operation(summary = "Cadastrar novo Espaço",
             description = "Cadastra um novo espaço no banco de dados do sistema. Requer um organizador autorizado no "
@@ -29,27 +24,39 @@ public class EspacoController {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos"),
                     @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
-
-
-    @GetMapping("/ler/{id}")
-    public Espaco lerEspaco (@PathVariable Long id){
-        return espacoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Espaço não encontrado com o id: " + id));
+    @PostMapping("/cadastrar")
+    public Espaco cadastrarEspaco(@RequestBody Espaco obj) {
+        return espacoRepository.save(obj);
     }
 
-    @GetMapping("/listarEspacos")
-    public List<Espaco> listarEspacos(){
-        return espacoRepository.findAll();
-    }
-
-    @PutMapping("/alterarEspaco/{id}")
-    public Espaco alterarEspaco (@PathVariable Long id, @RequestBody Espaco espaco){
-        espaco.setId(id);
-        return espacoRepository.save(espaco);
-    }
-
-    @DeleteMapping("/deletarEspaco/{id}")
+    @Operation(summary = "Remover Espaço",
+            description = "Remove um Espaço do sistema com base no ID fornecido. Este endpoint só pode ser "
+                    + "utilizado pelo Organizador.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Espaço deletado com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Espaço não encontrado")
+            })
+    @DeleteMapping("/remover_espaco/{id}")
     public void deletarEspaco (@PathVariable long id){
         espacoRepository.deleteById(id);
     }
+
+//    @GetMapping("/ler/{id}")
+//    public Espaco lerEspaco (@PathVariable Long id){
+//        return espacoRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Espaço não encontrado com o id: " + id));
+//    }
+
+//    @GetMapping("/listarEspacos")
+//    public List<Espaco> listarEspacos(){
+//        return espacoRepository.findAll();
+//    }
+//
+//    @PutMapping("/alterarEspaco/{id}")
+//    public Espaco alterarEspaco (@PathVariable Long id, @RequestBody Espaco espaco){
+//        espaco.setId(id);
+//        return espacoRepository.save(espaco);
+//    }
+
+
 }

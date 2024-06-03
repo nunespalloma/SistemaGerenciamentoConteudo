@@ -20,10 +20,12 @@ public class EdicaoController {
 
     @Operation(summary = "Cadastrar nova Edição",
                description = "Cadastra uma nova Edição no banco de dados do sistema. Requer um objeto de Edição no "
-                       + "corpo da requisição. Este endpoint só pode ser utilizado pelo Administrador.",
+                       + "corpo da requisição. Este endpoint só pode ser utilizado pelo Administrador." +
+                       "Pré-condições: Evento já deve ter sido cadastrado;",
                responses = {
                        @ApiResponse(responseCode = "201", description = "Edição criada com sucesso"),
-                       @ApiResponse(responseCode = "400", description = "Dados inválidos")
+                       @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                       @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
     @PostMapping("/cadastrar")
     public Edicao cadastrarEdicao (@RequestBody Edicao edicao){
@@ -36,15 +38,56 @@ public class EdicaoController {
         return edicaoRepository.save(edicao);
     }
 
+    @Operation(summary = "Cadastra Organizador da Edição",
+            description = "Cadastra o Organizador de uma Edição existente com base nos IDs "
+                    + "de Edição e Usuário fornecidos. Este endpoint só pode ser utilizado pelo Administrador. Edição do evento já deve ter sido cadastrada.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Edição atualizada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Edição não encontrada"),
+                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
+            })
+    @PutMapping("/cadastrar_organizador/{id}/{idUsuario}")
+    public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long idUsuario){
+        //Entrada: Receber uma edição e um usuário;usuario
+        //Saída: Efetuar o registro de um usuário como organizador do evento;
+        //Restição: Este endpoint só pode ser utilizado pelo Administrador.
+
+        //Implementação a ser ajustada:
+        Edicao edicao = lerEdicao(id);
+        edicao.setId(id);
+        return edicaoRepository.save(edicao);
+    }
+
+    @Operation(summary = "Ler Edições de um Evento",
+            description = "Retorna os detalhes das Edições específicas com base no ID de Evento fornecido. Este "
+                    + "endpoint só pode ser utilizado pelo Administrador.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Edição(ões) não encontrada(s)"),
+                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
+            })
+    @GetMapping("/ler_edicao_de_evento/{id}")
+    public Edicao lerEdicoesDeUmEvento (@PathVariable Long id){
+        //Pré-condição: Receber um evento;
+        //Saída: Apresenta lista de edições cadastradas para aquele evento;
+        //Restrição: Só pode ser feito pelo Administrador.
+
+        //Implementação a ser ajustada:
+        return edicaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
+    }
+
     @Operation(summary = "Solicitar dados das categorias da Edição",
                description = "Retorna as informações de categoria de uma edição existente com base no ID e categoria "
                        + "fornecidos. Este endpoint só pode ser utilizado pelo Organizador, o qual já deve ter sido "
                        + "autorizado.",
                responses = {
                        @ApiResponse(responseCode = "200", description = "Lista de Edições"),
-                       @ApiResponse(responseCode = "404", description = "Edição não encontrada")
+                       @ApiResponse(responseCode = "404", description = "Edição não encontrada"),
+                       @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
-    @GetMapping("/SolicitarDadosCategoria/{id}")
+    @GetMapping("/solicitar_dados_categoria/{id}")
     public Edicao solicitarDadosCategoria (@PathVariable Long id, @PathVariable String categoria){
         //Entrada: Receber categoria (chamadaTrabalhos, prazosEvento, informacoesInscricoes ou listaOrganizadores);
         //Saída: Retornar os dados já cadastrados daquela categoria na Edição;
@@ -62,7 +105,8 @@ public class EdicaoController {
                responses = {
                        @ApiResponse(responseCode = "200", description = "Edição atualizada com sucesso"),
                        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-                       @ApiResponse(responseCode = "404", description = "Edição não encontrada")
+                       @ApiResponse(responseCode = "404", description = "Edição não encontrada"),
+                       @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
     @PutMapping("/editar/{id}")
     public Edicao editarEdicao (@PathVariable Long id, @RequestBody Edicao edicao){
@@ -75,6 +119,18 @@ public class EdicaoController {
         return edicaoRepository.save(edicao);
     }
 
+    @Operation(summary = "Obter Edição por ID",
+            description = "Retorna os detalhes de uma Edição específica com base no ID fornecido.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Edição encontrada"),
+                    @ApiResponse(responseCode = "404", description = "Edição não encontrada")
+            })
+    @GetMapping("/ler/{id}")
+    public Edicao lerEdicao (@PathVariable Long id){
+        return edicaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
+    }
+//
     @Operation(summary = "Deletar Edição",
                description = "Remove uma Edição do sistema com base no ID fornecido. Este endpoint só pode ser "
                        + "utilizado pelo Administrador.",
@@ -82,7 +138,7 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "204", description = "Edição deletada com sucesso"),
                        @ApiResponse(responseCode = "404", description = "Edição não encontrada")
                })
-    @DeleteMapping("/deletar/{id}")
+    @DeleteMapping("/remover/{id}")
     public void deletarEdicao (@PathVariable long id){
         //Entrada: ID;
         //Fluxo: Deleção da Edição;
@@ -92,56 +148,11 @@ public class EdicaoController {
         //Implementação a ser ajustada:
         edicaoRepository.deleteById(id);
     }
+//
+//
+//
+//
 
-    @Operation(summary = "Obter Edições de um Evento",
-               description = "Retorna os detalhes das Edições específicas com base no ID de Evento fornecido. Este "
-                       + "endpoint só pode ser utilizado pelo Administrador.",
-               responses = {
-                       @ApiResponse(responseCode = "200", description = "Lista de Edições"),
-                       @ApiResponse(responseCode = "404", description = "Edição(ões) não encontrada(s)")
-               })
-    @GetMapping("/lerEdicoesDeUmEvento/{id}")
-    public Edicao lerEdicoesDeUmEvento (@PathVariable Long id){
-        //Pré-condição: Receber um evento;
-        //Saída: Apresenta lista de edições cadastradas para aquele evento;
-        //Restrição: Só pode ser feito pelo Administrador.
-
-        //Implementação a ser ajustada:
-        return edicaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
-    }
-
-    @Operation(summary = "Atualizar Organizador da Edição",
-               description = "Atualiza a informação do organizador de uma Edição existente com base nos IDs "
-                       + "de Edição e Usuário fornecidos. Este endpoint só pode ser utilizado pelo Administrador.",
-               responses = {
-                       @ApiResponse(responseCode = "200", description = "Edição atualizada com sucesso"),
-                       @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-                       @ApiResponse(responseCode = "404", description = "Edição não encontrada")
-               })
-    @PutMapping("/configurarOrganizador/{id}/{idUsuario}")
-    public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long idUsuario){
-        //Entrada: Receber uma edição e um usuário;usuario
-        //Saída: Efetuar o registro de um usuário como organizador do evento;
-        //Restição: Este endpoint só pode ser utilizado pelo Administrador.
-
-        //Implementação a ser ajustada:
-        Edicao edicao = lerEdicao(id);
-        edicao.setId(id);
-        return edicaoRepository.save(edicao);
-    }
-
-    @Operation(summary = "Obter Edição por ID",
-               description = "Retorna os detalhes de uma Edição específica com base no ID fornecido.",
-               responses = {
-                       @ApiResponse(responseCode = "200", description = "Edição encontrada"),
-                       @ApiResponse(responseCode = "404", description = "Edição não encontrada")
-               })
-    @GetMapping("/lerEdicao/{id}")
-    public Edicao lerEdicao (@PathVariable Long id){
-        return edicaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
-    }
 
     /*
 
