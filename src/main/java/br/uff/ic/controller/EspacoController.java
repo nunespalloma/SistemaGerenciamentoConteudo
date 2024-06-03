@@ -16,9 +16,11 @@ public class EspacoController {
     @Autowired
     private EspacoRepository espacoRepository;
 
-    @PostMapping("/cadastrar_espaco")
+    @PostMapping("/cadastrar")
     public Espaco cadastrarEspaco(@RequestBody Espaco obj) {
         return espacoRepository.save(obj);
+    }
+
     @Operation(summary = "Cadastrar novo Espaço",
             description = "Cadastra um novo espaço no banco de dados do sistema. Requer um organizador autorizado no "
                     + "corpo da requisição.",
@@ -27,12 +29,9 @@ public class EspacoController {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos"),
                     @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
-    @PostMapping("/criarEspaco")
-    public Espaco criarEspaco (@RequestBody Espaco espaco){
-        return espacoRepository.save(espaco);
-    }
 
-    @GetMapping("/lerEspaco/{id}")
+
+    @GetMapping("/ler/{id}")
     public Espaco lerEspaco (@PathVariable Long id){
         return espacoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Espaço não encontrado com o id: " + id));
