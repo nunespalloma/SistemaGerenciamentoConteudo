@@ -27,8 +27,9 @@ public class Espaco {
 
     private int capacidade;
 
-    private String recursos;
+    @ElementCollection //cria uma tabela para armazenar os valores da lista
+    private List<String> recursos;
 
-    @OneToOne(mappedBy = "espaco",cascade = CascadeType.ALL)
-    private Atividade atividade;
+//    @OneToOne(mappedBy = "espaco",cascade = CascadeType.ALL)
+//    private Atividade atividade;
 }

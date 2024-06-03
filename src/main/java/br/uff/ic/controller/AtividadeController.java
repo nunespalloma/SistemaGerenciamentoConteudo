@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Ajeitar controller, algumas operaçoes erradas
-
 @RestController
 @RequestMapping("/atividades")
 public class AtividadeController {
@@ -19,7 +17,11 @@ public class AtividadeController {
     @Autowired
     private AtividadeRepository atividadeRepository;
 
-    @Operation(summary = "Cadastrar nova Atividade",
+    @Autowired
+    private EspacoRepository espacoRepository;
+
+    @Operation(
+            summary = "Cadastrar nova Atividade",
             description = "Cadastra uma nova Atividade no banco de dados do sistema. Este endpoint só pode ser utilizado pelo Organizador. O espaço onde a atividade será realizada já deve ter sido\n" +
                     "cadastrado.",
             responses = {
@@ -27,26 +29,23 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos")
             })
 
-    @PostMapping("/cadastrarAtividade")
-    public Atividade cadastrarAtividade(@RequestBody Atividade atividade) {
-        return atividadeRepository.save(atividade);
+    @PostMapping("/cadastrar_atividade")
+    public Atividade cadastrarAtividade(@RequestBody Atividade obj) {
+        // se o espaço onde a atividade será realizada já foi cadastrado, cadastra a atividade
+        return atividadeRepository.save(obj); // faz o cadastramento do obj
     }
 
     @Operation(
-            summary = "Listar todas as Atividades",
+            summary = "Mostra para o usuário todas as Atividades",
             description = "Endpoint para listar todas as atividades cadastradas no sistema."
     )
-    @GetMapping("/listarAtividades")
+
+    @GetMapping("/lista_atividades")
     public List<Atividade> listarAtividades() {
         return atividadeRepository.findAll();
     }
 
-//    @Operation(
-//            summary = "Listar atividades por evento",
-//            description = "Endpoint para listar atividades por evento."
-//    )
-//   // terminar implementacao
-//    }
+    // AJUSTAR
 
 
 //    @Operation(
@@ -65,27 +64,27 @@ public class AtividadeController {
 //        return null;
 //    }
 
-    @Operation(
-            summary = "Deletar Atividade",
-            description = "Endpoint para deletar uma atividade existente no sistema."
-    )
-    @DeleteMapping("/deletarAtividade/{id}")
-    public void deletarAtividade(@PathVariable Long id) {
-        atividadeRepository.deleteById(id);
-    }
-
-
-    @GetMapping("/lerAtividade/{id}")
-    public Atividade lerAtividade (@PathVariable Long id){
-        return atividadeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
-    }
-
-
-    @PutMapping("/alterarAtividade/{id}")
-    public Atividade alterarAtividade (@PathVariable Long id, @RequestBody Atividade atividade){
-        atividade.setId(id);
-        return atividadeRepository.save(atividade);
-    }
+//    @Operation(
+//            summary = "Deletar Atividade",
+//            description = "Endpoint para deletar uma atividade existente no sistema."
+//    )
+//    @DeleteMapping("/deletarAtividade/{id}")
+//    public void deletarAtividade(@PathVariable Long id) {
+//        atividadeRepository.deleteById(id);
+//    }
+//
+//
+//    @GetMapping("/lerAtividade/{id}")
+//    public Atividade lerAtividade (@PathVariable Long id){
+//        return atividadeRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
+//    }
+//
+//
+//    @PutMapping("/alterarAtividade/{id}")
+//    public Atividade alterarAtividade (@PathVariable Long id, @RequestBody Atividade atividade){
+//        atividade.setId(id);
+//        return atividadeRepository.save(atividade);
+//    }
 
 }

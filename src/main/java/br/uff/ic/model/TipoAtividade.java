@@ -5,6 +5,5 @@ public enum TipoAtividade {
     PAINEL,
     SESSAO_TECNICA,
     MINICURSO,
-    OFICINA,
-    OUTRO
+    OFICINA
 }
