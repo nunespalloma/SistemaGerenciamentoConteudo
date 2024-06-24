@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter //criando os metodos gets e os deixando ocultos
 @Setter //criando os metodos sets e os deixando ocultos
@@ -22,10 +23,9 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String login;
-
     private String senha;
 
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String nome;
@@ -38,9 +38,14 @@ public class Usuario implements UserDetails {
     @OneToOne(mappedBy = "organizador", cascade = CascadeType.ALL)
     private Edicao edicao;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -50,7 +55,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override

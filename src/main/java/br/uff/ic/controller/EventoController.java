@@ -2,19 +2,23 @@ package br.uff.ic.controller;
 
 import br.uff.ic.model.Evento;
 import br.uff.ic.repository.EventoRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/EventoController")
+@RequestMapping("/admin/eventos")
 public class EventoController {
 
     @Autowired
     private EventoRepository eventoRepository;
 
-    @PostMapping("/criarEvento")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/")
     public Evento criarEvento (@RequestBody Evento evento){
         return eventoRepository.save(evento);
     }

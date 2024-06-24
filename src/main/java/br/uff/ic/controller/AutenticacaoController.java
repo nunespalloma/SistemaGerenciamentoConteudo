@@ -5,19 +5,24 @@ import br.uff.ic.infra.security.DadosTokenJWT;
 import br.uff.ic.infra.security.TokenService;
 import br.uff.ic.model.DadosAutenticacao;
 import br.uff.ic.model.Usuario;
+import br.uff.ic.repository.UsuarioRepository;
+import br.uff.ic.services.AutenticacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/autenticacao")
 public class AutenticacaoController {
+
+    @Autowired
+    private AutenticacaoService autenticacaoService;
 
     @Autowired
     private AuthenticationManager manager;
@@ -25,13 +30,36 @@ public class AutenticacaoController {
     @Autowired
     private TokenService tokenService;
 
-    @PostMapping
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+
+    @PostMapping("/login")
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacao dados){
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
         var authentication = manager.authenticate(authenticationToken);
         var tokenJWT = tokenService.gerarToken((Usuario) authentication.getPrincipal());
 
         return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
+    }
+
+
+//    @PostMapping("/registrar")
+//    public Usuario registerUser(@RequestBody Usuario usuario) {
+//        return usuarioRepository.save(usuario);
+//    }
+    @PostMapping("/registrar")
+    public ResponseEntity<Usuario> registerUser(@RequestBody Usuario usuario) {
+    Usuario novoUsuario = autenticacaoService.registrarUsuario(usuario, List.of("ROLE_USER"));
+    return ResponseEntity.ok(novoUsuario);
+}
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/papeis/{userId}")
+    public ResponseEntity<Usuario> updateRoles(@PathVariable Long userId, @RequestBody List<String> roles) {
+        System.out.println("Update User");
+        Usuario updatedUser = autenticacaoService.updateRoles(userId, roles);
+        return ResponseEntity.ok(updatedUser);
     }
 
 //    @Autowired
