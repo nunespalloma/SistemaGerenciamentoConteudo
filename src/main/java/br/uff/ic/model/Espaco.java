@@ -19,7 +19,10 @@ public class Espaco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private long id;
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    private TipoEspaco tipo;
 
     private String nome;
 

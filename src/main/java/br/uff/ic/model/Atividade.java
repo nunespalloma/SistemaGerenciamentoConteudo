@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -21,10 +20,10 @@ public class Atividade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
-
     @Enumerated(EnumType.STRING)
     private TipoAtividade tipo;
+
+    private String nome;
 
     private String descricao;
 
@@ -37,7 +36,7 @@ public class Atividade {
     @Temporal(TemporalType.TIME)
     private LocalTime horarioFinal;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "espaco_id")
     private Espaco espaco;
 

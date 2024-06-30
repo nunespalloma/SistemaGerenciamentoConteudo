@@ -3,76 +3,110 @@ package br.uff.ic.controller;
 import br.uff.ic.model.Atividade;
 import br.uff.ic.repository.AtividadeRepository;
 import br.uff.ic.repository.EspacoRepository;
+import br.uff.ic.services.AtividadeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/atividade")
+@RequestMapping("/api/atividade")
 public class AtividadeController {
 
     @Autowired
-    private AtividadeRepository atividadeRepository;
+    private AtividadeService atividadeService;
 
     @Autowired
     private EspacoRepository espacoRepository;
 
-    @Operation(
-            summary = "Cadastrar nova Atividade",
-            description = "Cadastra uma nova Atividade no banco de dados do sistema. Este endpoint só pode ser utilizado pelo Organizador. O espaço onde a atividade será realizada já deve ter sido\n" +
-                    "cadastrado.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Atividade criada com sucesso"),
-                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
-            })
-
-    @PostMapping("/cadastrar")
-    public Atividade cadastrarAtividade(@RequestBody Atividade obj) {
-        // se o espaço onde a atividade será realizada já foi cadastrado, cadastra a atividade
-        return atividadeRepository.save(obj); // faz o cadastramento do obj
+    @GetMapping
+    public List<Atividade> getAllAtividades() {
+        return atividadeService.findAll();
     }
 
-    @Operation(
-            summary = "Lista de Atividades do Evento",
-            description = "Esse Endpoint lista para o Usuário todas as Atividades de um Evento cadastradas no sistema.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
-            })
-    @GetMapping("/{idEvento}/lista_atividades")
-    public List<Atividade> listarAtividades(@PathVariable Long idEvento) {
-        // ajeitar implementação
-        return atividadeRepository.findAll();
+    @PostMapping
+    public ResponseEntity<Atividade> createAtividade(@Valid @RequestBody Atividade atividade) {
+        Atividade createdAtividade = atividadeService.save(atividade);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAtividade);
     }
 
-    @Operation(
-            summary = "Detalhes sobre uma Atividade",
-            description = "Esse Endpoint retorna detalhes de uma Atividade especifica com base no ID fornecido.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
-            })
-    @GetMapping("/listar/{id}")
-    public Atividade listarAtividade(@PathVariable Long id) {
-        return atividadeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
+    @PutMapping("/{id}")
+    public ResponseEntity<Atividade> updateAtividade(@PathVariable Long id, @Valid @RequestBody Atividade atividade) {
+        atividade.setId(id);
+        Atividade updatedAtividade = atividadeService.save(atividade);
+        return ResponseEntity.ok(updatedAtividade);
     }
 
-    @Operation(summary = "Remover Atividade",
-            description = "Remove um Atividade do sistema com base no ID fornecido. Este endpoint só pode ser "
-                    + "utilizado pelo Organizador.",
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "Atividade deletada com sucesso"),
-                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-            })
-    @DeleteMapping("/remover_atividade/{id}")
-    public void deletarAtividade(@PathVariable Long id) {
-        atividadeRepository.deleteById(id);
+    @GetMapping("/{id}")
+    public Optional<Atividade> getAtividadeById(@PathVariable Long id) {
+        return atividadeService.findById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAtividade(@PathVariable Long id) {
+        atividadeService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+//
+//    @Operation(
+//            summary = "Cadastrar nova Atividade",
+//            description = "Cadastra uma nova Atividade no banco de dados do sistema. Este endpoint só pode ser utilizado pelo Organizador. O espaço onde a atividade será realizada já deve ter sido\n" +
+//                    "cadastrado.",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Atividade criada com sucesso"),
+//                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+//                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
+//            })
+//
+//    @PostMapping("/cadastrar")
+//    public Atividade cadastrarAtividade(@RequestBody Atividade obj) {
+//        // se o espaço onde a atividade será realizada já foi cadastrado, cadastra a atividade
+//        return atividadeRepository.save(obj); // faz o cadastramento do obj
+//    }
+//
+//    @Operation(
+//            summary = "Lista de Atividades do Evento",
+//            description = "Esse Endpoint lista para o Usuário todas as Atividades de um Evento cadastradas no sistema.",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Sucesso"),
+//                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
+//            })
+//    @GetMapping("/{idEvento}/lista_atividades")
+//    public List<Atividade> listarAtividades(@PathVariable Long idEvento) {
+//        // ajeitar implementação
+//        return atividadeRepository.findAll();
+//    }
+//
+//    @Operation(
+//            summary = "Detalhes sobre uma Atividade",
+//            description = "Esse Endpoint retorna detalhes de uma Atividade especifica com base no ID fornecido.",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", description = "Sucesso"),
+//                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
+//            })
+//    @GetMapping("/listar/{id}")
+//    public Atividade listarAtividade(@PathVariable Long id) {
+//        return atividadeRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
+//    }
+//
+//    @Operation(summary = "Remover Atividade",
+//            description = "Remove um Atividade do sistema com base no ID fornecido. Este endpoint só pode ser "
+//                    + "utilizado pelo Organizador.",
+//            responses = {
+//                    @ApiResponse(responseCode = "204", description = "Atividade deletada com sucesso"),
+//                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+//            })
+//    @DeleteMapping("/remover_atividade/{id}")
+//    public void deletarAtividade(@PathVariable Long id) {
+//        atividadeRepository.deleteById(id);
+//    }
 
     // AJUSTAR
 
