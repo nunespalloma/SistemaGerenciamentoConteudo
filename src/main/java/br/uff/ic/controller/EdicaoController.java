@@ -2,14 +2,20 @@ package br.uff.ic.controller;
 
 import br.uff.ic.model.Edicao;
 import br.uff.ic.model.Evento;
-import br.uff.ic.model.Usuario;
 import br.uff.ic.repository.EdicaoRepository;
+import br.uff.ic.repository.EventoRepository;
+import br.uff.ic.repository.UsuarioRepository;
+import ch.qos.logback.core.net.SyslogOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/edicao")
@@ -17,6 +23,12 @@ public class EdicaoController {
 
     @Autowired
     private EdicaoRepository edicaoRepository;
+
+    @Autowired
+    private EventoRepository eventoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Operation(summary = "Cadastrar nova Edição",
                description = "Cadastra uma nova Edição no banco de dados do sistema. Requer um objeto de Edição no "
@@ -28,15 +40,21 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
     @PostMapping("/cadastrar")
-    public Edicao cadastrarEdicao (@RequestBody Edicao edicao){
-        //Pré-condições: Evento já deve ter sido cadastrado;
-        //Entrada: Receber dados da edição (ano, número, data inicial, data final, cidade);
-        //Saída: Cadastrar edição, efetuando o registro das informações;
-        //Restrição: Este endpoint só pode ser utilizado pelo Administrador.
+    public ResponseEntity<Edicao> cadastrarEdicao(@RequestBody Edicao edicao) {
+        Long eventoId = edicao.getEvento().getId();
 
-        //Implementação a ser ajustada:
-        return edicaoRepository.save(edicao);
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        if (!eventoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        Edicao savedEdicao = edicaoRepository.save(edicao);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedEdicao);
     }
+    /*public Edicao cadastrarEdicao (@RequestBody Edicao edicao){
+        //Implementação a ser ajustada: Pré-condições: Evento já deve ter sido cadastrado
+        return edicaoRepository.save(edicao);
+    }*/
 
     @Operation(summary = "Cadastra Organizador da Edição",
             description = "Cadastra o Organizador de uma Edição existente com base nos IDs "
@@ -49,13 +67,12 @@ public class EdicaoController {
             })
     @PutMapping("/cadastrar_organizador/{id}/{idUsuario}")
     public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long idUsuario){
-        //Entrada: Receber uma edição e um usuário;usuario
-        //Saída: Efetuar o registro de um usuário como organizador do evento;
-        //Restição: Este endpoint só pode ser utilizado pelo Administrador.
+        //Implementação a ser ajustada: Saída: Efetuar o registro de um usuário como organizador do evento;
 
-        //Implementação a ser ajustada:
         Edicao edicao = lerEdicao(id);
         edicao.setId(id);
+        edicao.setOrganizador(usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + idUsuario)));
         return edicaoRepository.save(edicao);
     }
 
@@ -68,12 +85,8 @@ public class EdicaoController {
                     @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
     @GetMapping("/ler_edicao_de_evento/{id}")
-    public Edicao lerEdicoesDeUmEvento (@PathVariable Long id){
-        //Pré-condição: Receber um evento;
-        //Saída: Apresenta lista de edições cadastradas para aquele evento;
-        //Restrição: Só pode ser feito pelo Administrador.
-
-        //Implementação a ser ajustada:
+    public Edicao lerEdicoesDeUmEvento (@PathVariable Long id){ //id do evento
+        //Implementação a ser ajustada: Saída: Apresenta lista de edições cadastradas para aquele evento;
         return edicaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
     }
@@ -89,11 +102,11 @@ public class EdicaoController {
                })
     @GetMapping("/solicitar_dados_categoria/{id}")
     public Edicao solicitarDadosCategoria (@PathVariable Long id, @PathVariable String categoria){
+        //Implementação a ser ajustada:
         //Entrada: Receber categoria (chamadaTrabalhos, prazosEvento, informacoesInscricoes ou listaOrganizadores);
         //Saída: Retornar os dados já cadastrados daquela categoria na Edição;
-        //Restrição: Este endpoint só pode ser utilizado pelo Organizador, o qual já deve ter sido autorizado.
 
-        //Implementação a ser ajustada:
+
         return edicaoRepository.findById(id)
                                 .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
     }
@@ -110,11 +123,10 @@ public class EdicaoController {
                })
     @PutMapping("/editar/{id}")
     public Edicao editarEdicao (@PathVariable Long id, @RequestBody Edicao edicao){
+        //Implementação a ser ajustada:
         //Entrada: Receber os atributos da Edição de acordo com a categoria escolhida;
         //Saída: efetuar o registro/alteração da informação no banco de dados;
-        //Restrição: Este endpoint só pode ser utilizado pelo Organizador, o qual já deve ter sido autorizado.
 
-        //Implementação a ser ajustada:
         edicao.setId(id);
         return edicaoRepository.save(edicao);
     }
@@ -130,7 +142,7 @@ public class EdicaoController {
         return edicaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
     }
-//
+
     @Operation(summary = "Deletar Edição",
                description = "Remove uma Edição do sistema com base no ID fornecido. Este endpoint só pode ser "
                        + "utilizado pelo Administrador.",
@@ -140,19 +152,8 @@ public class EdicaoController {
                })
     @DeleteMapping("/remover/{id}")
     public void deletarEdicao (@PathVariable long id){
-        //Entrada: ID;
-        //Fluxo: Deleção da Edição;
-        //Saída: N/A;
-        //Restrição: Este endpoint só pode ser utilizado pelo Administrador.
-
-        //Implementação a ser ajustada:
         edicaoRepository.deleteById(id);
     }
-//
-//
-//
-//
-
 
     /*
 
