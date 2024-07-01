@@ -18,29 +18,45 @@ public class EventoController {
     private EventoRepository eventoRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/")
+    @PostMapping("")
     public Evento criarEvento (@RequestBody Evento evento){
         return eventoRepository.save(evento);
     }
 
-    @GetMapping("/lerEvento/{id}")
+    @GetMapping("/{id}")
     public Evento lerEvento(@PathVariable Long id){
+        System.out.println(id);
         return eventoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado com o id: " + id));
     }
 
-    @GetMapping("/listarEventos")
+    @GetMapping("")
     public List<Evento> listarEventos(){
         return eventoRepository.findAll();
     }
 
-    @PutMapping("/alterarEvento/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
     public Evento alterarEvento(@PathVariable Long id, @RequestBody Evento evento){
-        evento.setId(id);
-        return eventoRepository.save(evento);
+        return eventoRepository.findById(id).map(existingEvento -> {
+            if (evento.getNome() != null) {
+                existingEvento.setNome(evento.getNome());
+            }
+            if (evento.getSigla() != null) {
+                existingEvento.setSigla(evento.getSigla());
+            }
+            if (evento.getDescricao() != null) {
+                existingEvento.setDescricao(evento.getDescricao());
+            }
+            Evento updatedEvento = eventoRepository.save(existingEvento);
+            return eventoRepository.save(existingEvento);
+        }).orElseThrow(() -> new RuntimeException("Evento não encontrado com o id: " + id));
+//        evento.setId(id);
+//        return eventoRepository.save(evento);
     }
 
-    @DeleteMapping("/deletarEvento/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
     public void deletarEvento(@PathVariable long id){
         eventoRepository.deleteById(id);
     }

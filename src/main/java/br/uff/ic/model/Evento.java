@@ -1,5 +1,6 @@
 package br.uff.ic.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor //criando o construtor vazio e o deixando oculto
 @AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
 @Entity //transformando essa classe em uma entidade JPA
+@JsonInclude(JsonInclude.Include.NON_NULL) // Inclui apenas campos não nulos na resposta JSON
 public class Evento {
 
     @Id

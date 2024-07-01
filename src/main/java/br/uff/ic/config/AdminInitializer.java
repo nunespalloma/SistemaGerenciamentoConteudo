@@ -32,6 +32,27 @@ public class AdminInitializer {
                 autenticacaoService.registrarUsuario(admin, Collections.singletonList("ROLE_ADMIN"));
                 System.out.println("Admin user created");
             }
+            if (usuarioRepository.findByEmail("organizer@example.com") == null) {
+                Usuario organizer = new Usuario();
+                organizer.setSenha("organizer123");
+                organizer.setEmail("organizer@example.com");
+                organizer.setNome("Organizer");
+                organizer.setAfiliacao("Events");
+
+                autenticacaoService.registrarUsuario(organizer, Collections.singletonList("ROLE_ORGANIZER"));
+                System.out.println("Organizer user created");
+            }
+            if (usuarioRepository.findByEmail("user@example.com") == null) {
+                Usuario user = new Usuario();
+                user.setSenha("user123");
+                user.setEmail("user@example.com");
+                user.setNome("User");
+                user.setAfiliacao("Community");
+
+                autenticacaoService.registrarUsuario(user, Collections.singletonList("ROLE_USER"));
+                System.out.println("Common user created");
+            }
+
         };
     }
 }
