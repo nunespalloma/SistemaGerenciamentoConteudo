@@ -46,6 +46,15 @@ public class SecurityConfigurations {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/organizador").hasRole("ORGANIZER")
                                 .requestMatchers("/user/").hasRole("USER")
+
+                                //Autorizações da Controller Edicao
+                                .requestMatchers(HttpMethod.POST, "/edicao/cadastrar").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/edicao/cadastrar_organizador/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/edicao/ler_edicao_de_evento/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/edicao/solicitar_dados_categoria/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.PUT, "/edicao/editar/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.GET, "/edicao/ler/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/edicao/remover/**").hasRole("ADMIN")
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

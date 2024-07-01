@@ -1,6 +1,6 @@
 package br.uff.ic.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor //criando o construtor vazio e o deixando oculto
 @AllArgsConstructor //criando o construtor com todos os argumentos e o deixando oculto
 @Entity //transformando essa classe em uma entidade JPA
-@JsonInclude(JsonInclude.Include.NON_NULL) // Inclui apenas campos não nulos na resposta JSON
 public class Evento {
 
     @Id
@@ -30,5 +29,6 @@ public class Evento {
     private String descricao;
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Edicao> edicoes;
 }
