@@ -36,31 +36,31 @@ public class Edicao {
     @JoinColumn(name = "evento_id")
     private Evento evento;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario organizador;
+//    @OneToOne
+//    @JoinColumn(name = "usuario_id")
+//    private Usuario organizador;
 
-    @OneToMany(mappedBy = "edicao", cascade = CascadeType.ALL)//cascade ALL é para trazer todas as atividades sempre
-    // que eu fizer busca por uma edição
-    private List<Atividade> atividades;
-
-    private String chamadaTrabalhos; //A chamada de trabalhos do evento é um texto que descreve o tipo de trabalhos
-    // que serão aceitos pelo evento;
-
-    @Temporal(TemporalType.DATE)
-    private Date prazoSubmissãoTrabalhos;
-
-    @Temporal(TemporalType.DATE)
-    private Date prazoDivulgacaoTrabalhosAceitos;
-
-    @Temporal(TemporalType.DATE)
-    private Date prazoEntregaVersaoFinal;
-
-    private float precoLote;
-
-    private String linkSistemaInscricoes;
-
-    @OneToMany
-    private List<Usuario> membrosOrganizacao;
+//    @OneToMany(mappedBy = "edicao", cascade = CascadeType.ALL)//cascade ALL é para trazer todas as atividades sempre
+//    // que eu fizer busca por uma edição
+//    private List<Atividade> atividades;
+//
+//    private String chamadaTrabalhos; //A chamada de trabalhos do evento é um texto que descreve o tipo de trabalhos
+//    // que serão aceitos pelo evento;
+//
+//    @Temporal(TemporalType.DATE)
+//    private Date prazoSubmissãoTrabalhos;
+//
+//    @Temporal(TemporalType.DATE)
+//    private Date prazoDivulgacaoTrabalhosAceitos;
+//
+//    @Temporal(TemporalType.DATE)
+//    private Date prazoEntregaVersaoFinal;
+//
+//    private float precoLote;
+//
+//    private String linkSistemaInscricoes;
+//
+//    @OneToMany
+//    private List<Usuario> membrosOrganizacao;
 
 }

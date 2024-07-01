@@ -1,12 +1,17 @@
 package br.uff.ic.controller;
 
+import br.uff.ic.dto.EdicaoDTO;
+import br.uff.ic.model.Edicao;
 import br.uff.ic.model.Evento;
 import br.uff.ic.repository.EventoRepository;
+import br.uff.ic.services.EdicaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -16,6 +21,9 @@ public class EventoController {
 
     @Autowired
     private EventoRepository eventoRepository;
+
+    @Autowired
+    private EdicaoService edicaoService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
@@ -59,5 +67,16 @@ public class EventoController {
     @DeleteMapping("/{id}")
     public void deletarEvento(@PathVariable long id){
         eventoRepository.deleteById(id);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{eventoId}/edicoes")
+    public ResponseEntity<EdicaoDTO> criarEdicao(@PathVariable Long eventoId, @RequestBody Edicao edicao) {
+        try {
+            EdicaoDTO novaEdicao = edicaoService.criarEdicao(eventoId, edicao);
+            return ResponseEntity.ok(novaEdicao);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

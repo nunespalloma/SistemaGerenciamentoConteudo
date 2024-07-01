@@ -32,11 +32,11 @@ public class Usuario implements UserDetails {
 
     private String afiliacao;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Atividade> atividadesFavoritas;
-
-    @OneToOne(mappedBy = "organizador", cascade = CascadeType.ALL)
-    private Edicao edicao;
+//    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+//    private List<Atividade> atividadesFavoritas;
+//
+//    @OneToOne(mappedBy = "organizador", cascade = CascadeType.ALL)
+//    private Edicao edicao;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
