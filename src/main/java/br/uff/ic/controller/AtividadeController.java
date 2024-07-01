@@ -1,6 +1,7 @@
 package br.uff.ic.controller;
 
 import br.uff.ic.model.Atividade;
+import br.uff.ic.model.Espaco;
 import br.uff.ic.repository.AtividadeRepository;
 import br.uff.ic.repository.EspacoRepository;
 import br.uff.ic.services.AtividadeService;
@@ -10,137 +11,97 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/atividade")
+@RequestMapping("atividade")
 public class AtividadeController {
 
     @Autowired
     private AtividadeService atividadeService;
 
-    @Autowired
-    private EspacoRepository espacoRepository;
-
-    @GetMapping
-    public List<Atividade> getAllAtividades() {
-        return atividadeService.findAll();
-    }
-
-    @PostMapping
-    public ResponseEntity<Atividade> createAtividade(@Valid @RequestBody Atividade atividade) {
+    @Operation(
+            summary = "Criar nova Atividade",
+            description = "Cadastra uma nova Atividade no banco de dados do sistema. Este endpoint só pode ser utilizado pelo Organizador. O espaço onde a atividade será realizada já deve ter sido\n" +
+                    "cadastrado.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Atividade criada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "403", description = "Usuário não autorizado"),
+                    @ApiResponse(responseCode = "404", description = "Espaço não encontrado")
+            })
+    // TODO: Adicionar a anotação @PreAuthorize("hasRole('ORGANIZADOR')") para restringir o acesso a apenas usuários com a role ORGANIZADOR
+    // TODO: Implrementar a lógica para verificar se o espaço informado na atividade existe no sistema
+    @PostMapping("/criar")
+    public ResponseEntity<?> createAtividade(@Valid @RequestBody Atividade atividade, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Erro de validação: " + bindingResult.getAllErrors());
+        }
         Atividade createdAtividade = atividadeService.save(atividade);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAtividade);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Atividade> updateAtividade(@PathVariable Long id, @Valid @RequestBody Atividade atividade) {
+    @Operation(
+            summary = "Atualizar Atividade",
+            description = "Endpoint para atualizar uma atividade existente no sistema.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Atividade atualizada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+            })
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity<?> updateAtividade(@PathVariable Long id, @Valid @RequestBody Atividade atividade, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("Erro de validação: " + bindingResult.getAllErrors());
+        }
+
         atividade.setId(id);
         Atividade updatedAtividade = atividadeService.save(atividade);
         return ResponseEntity.ok(updatedAtividade);
     }
 
-    @GetMapping("/{id}")
-    public Optional<Atividade> getAtividadeById(@PathVariable Long id) {
-        return atividadeService.findById(id);
+    @Operation(
+            summary = "Listar todas as Atividades",
+            description = "Esse Endpoint lista para o Usuário todas as Atividades cadastradas no sistema.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Atividades não encontradas")
+            })
+    @GetMapping("/todas")
+    public ResponseEntity<List<Atividade>> getAllAtividades() {
+        List<Atividade> atividades = atividadeService.findAll();
+        return ResponseEntity.ok(atividades);
     }
 
-    @DeleteMapping("/{id}")
+    @Operation(
+            summary = "Detalhes sobre uma Atividade",
+            description = "Esse Endpoint retorna detalhes de uma Atividade especifica com base no ID fornecido.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+            })
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAtividadeById(@PathVariable Long id) {
+        Optional<Atividade> atividade = atividadeService.findById(id);
+        return atividade.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(
+            summary = "Remover Atividade",
+            description = "Remove uma Atividade do sistema com base no ID fornecido. Este endpoint só pode ser utilizado pelo Organizador.",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Atividade deletada com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
+            })
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deleteAtividade(@PathVariable Long id) {
         atividadeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-//
-//    @Operation(
-//            summary = "Cadastrar nova Atividade",
-//            description = "Cadastra uma nova Atividade no banco de dados do sistema. Este endpoint só pode ser utilizado pelo Organizador. O espaço onde a atividade será realizada já deve ter sido\n" +
-//                    "cadastrado.",
-//            responses = {
-//                    @ApiResponse(responseCode = "200", description = "Atividade criada com sucesso"),
-//                    @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-//                    @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
-//            })
-//
-//    @PostMapping("/cadastrar")
-//    public Atividade cadastrarAtividade(@RequestBody Atividade obj) {
-//        // se o espaço onde a atividade será realizada já foi cadastrado, cadastra a atividade
-//        return atividadeRepository.save(obj); // faz o cadastramento do obj
-//    }
-//
-//    @Operation(
-//            summary = "Lista de Atividades do Evento",
-//            description = "Esse Endpoint lista para o Usuário todas as Atividades de um Evento cadastradas no sistema.",
-//            responses = {
-//                    @ApiResponse(responseCode = "200", description = "Sucesso"),
-//                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
-//            })
-//    @GetMapping("/{idEvento}/lista_atividades")
-//    public List<Atividade> listarAtividades(@PathVariable Long idEvento) {
-//        // ajeitar implementação
-//        return atividadeRepository.findAll();
-//    }
-//
-//    @Operation(
-//            summary = "Detalhes sobre uma Atividade",
-//            description = "Esse Endpoint retorna detalhes de uma Atividade especifica com base no ID fornecido.",
-//            responses = {
-//                    @ApiResponse(responseCode = "200", description = "Sucesso"),
-//                    @ApiResponse(responseCode = "404", description = "Eventos não encontrados")
-//            })
-//    @GetMapping("/listar/{id}")
-//    public Atividade listarAtividade(@PathVariable Long id) {
-//        return atividadeRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
-//    }
-//
-//    @Operation(summary = "Remover Atividade",
-//            description = "Remove um Atividade do sistema com base no ID fornecido. Este endpoint só pode ser "
-//                    + "utilizado pelo Organizador.",
-//            responses = {
-//                    @ApiResponse(responseCode = "204", description = "Atividade deletada com sucesso"),
-//                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
-//            })
-//    @DeleteMapping("/remover_atividade/{id}")
-//    public void deletarAtividade(@PathVariable Long id) {
-//        atividadeRepository.deleteById(id);
-//    }
-
-    // AJUSTAR
-
-
-//    @Operation(
-//            summary = "Atualizar Atividade",
-//            description = "Endpoint para atualizar uma atividade existente no sistema."
-//    )
-//    @PutMapping("/atualizarAtividade/{id}")
-//    public Atividade atualizarAtividade(@PathVariable Long id, @RequestBody Atividade atividadeAtualizada) {
-//        Atividade atividadeExistente = atividadeRepository.findById(id).orElse(null);
-//        if (atividadeExistente != null) {
-//            atividadeExistente.setNome(atividadeAtualizada.getNome());
-//            atividadeExistente.setDescricao(atividadeAtualizada.getDescricao());
-//            // Atualize os outros atributos
-//            return atividadeRepository.save(atividadeExistente);
-//        }
-//        return null;
-//    }
-
-
-//
-//
-//    @GetMapping("/lerAtividade/{id}")
-//    public Atividade lerAtividade (@PathVariable Long id){
-//        return atividadeRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Atividade não encontrada com o id: " + id));
-//    }
-//
-//
-//    @PutMapping("/alterarAtividade/{id}")
-//    public Atividade alterarAtividade (@PathVariable Long id, @RequestBody Atividade atividade){
-//        atividade.setId(id);
-//        return atividadeRepository.save(atividade);
-//    }
-
 }
+
