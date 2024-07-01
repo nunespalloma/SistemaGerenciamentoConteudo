@@ -1,9 +1,7 @@
 package br.uff.ic.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import jakarta.persistence.*;
 import java.util.Date;
@@ -34,6 +32,7 @@ public class Edicao {
 
     @ManyToOne
     @JoinColumn(name = "evento_id")
+    @JsonBackReference
     private Evento evento;
 
     @OneToOne

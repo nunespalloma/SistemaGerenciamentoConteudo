@@ -1,5 +1,6 @@
 package br.uff.ic.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,5 +29,6 @@ public class Evento {
     private String descricao;
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Edicao> edicoes;
 }

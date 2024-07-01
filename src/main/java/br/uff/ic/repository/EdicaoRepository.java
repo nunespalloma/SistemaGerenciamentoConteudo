@@ -3,6 +3,8 @@ package br.uff.ic.repository;
 import br.uff.ic.model.Edicao;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface EdicaoRepository extends JpaRepository<Edicao, Long> {
+import java.util.List;
 
+public interface EdicaoRepository extends JpaRepository<Edicao, Long> {
+    List<Edicao> findByEventoId(Long id);
 }

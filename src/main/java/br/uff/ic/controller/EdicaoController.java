@@ -1,17 +1,17 @@
 package br.uff.ic.controller;
 
+import br.uff.ic.controller.mapping.EdicaoCadastrarJSON;
 import br.uff.ic.model.Edicao;
 import br.uff.ic.model.Evento;
+import br.uff.ic.model.Usuario;
 import br.uff.ic.repository.EdicaoRepository;
 import br.uff.ic.repository.EventoRepository;
 import br.uff.ic.repository.UsuarioRepository;
-import ch.qos.logback.core.net.SyslogOutputStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,21 +40,24 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
     @PostMapping("/cadastrar")
-    public ResponseEntity<Edicao> cadastrarEdicao(@RequestBody Edicao edicao) {
-        Long eventoId = edicao.getEvento().getId();
+    public ResponseEntity<Edicao> cadastrarEdicao(@RequestBody EdicaoCadastrarJSON edicaoCadastrarJSON) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(edicaoCadastrarJSON.getEvento_id());
 
-        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
         if (!eventoOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
+        Edicao edicao = new Edicao();
+        edicao.setNumero(edicaoCadastrarJSON.getNumero());
+        edicao.setAno(edicaoCadastrarJSON.getAno());
+        edicao.setDataInicial(edicaoCadastrarJSON.getDataInicial());
+        edicao.setDataFinal(edicaoCadastrarJSON.getDataFinal());
+        edicao.setCidade(edicaoCadastrarJSON.getCidade());
+        edicao.setEvento(eventoOptional.get());
+
         Edicao savedEdicao = edicaoRepository.save(edicao);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEdicao);
     }
-    /*public Edicao cadastrarEdicao (@RequestBody Edicao edicao){
-        //Implementação a ser ajustada: Pré-condições: Evento já deve ter sido cadastrado
-        return edicaoRepository.save(edicao);
-    }*/
 
     @Operation(summary = "Cadastra Organizador da Edição",
             description = "Cadastra o Organizador de uma Edição existente com base nos IDs "
@@ -66,14 +69,19 @@ public class EdicaoController {
                     @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
     @PutMapping("/cadastrar_organizador/{id}/{idUsuario}")
-    public Edicao configurarOrganizadorEdicao (@PathVariable Long id, @PathVariable Long idUsuario){
-        //Implementação a ser ajustada: Saída: Efetuar o registro de um usuário como organizador do evento;
+    public ResponseEntity<Edicao> configurarOrganizadorEdicao(@PathVariable Long id, @PathVariable Long idUsuario) {
+        Optional<Edicao> edicaoOptional = edicaoRepository.findById(id);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(idUsuario);
 
-        Edicao edicao = lerEdicao(id);
-        edicao.setId(id);
-        edicao.setOrganizador(usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o id: " + idUsuario)));
-        return edicaoRepository.save(edicao);
+        if (!edicaoOptional.isPresent() || !usuarioOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        Edicao edicao = edicaoOptional.get();
+        edicao.setOrganizador(usuarioOptional.get());
+
+        Edicao savedEdicao = edicaoRepository.save(edicao);
+        return ResponseEntity.status(HttpStatus.OK).body(savedEdicao);
     }
 
     @Operation(summary = "Ler Edições de um Evento",
@@ -85,10 +93,15 @@ public class EdicaoController {
                     @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
             })
     @GetMapping("/ler_edicao_de_evento/{id}")
-    public Edicao lerEdicoesDeUmEvento (@PathVariable Long id){ //id do evento
-        //Implementação a ser ajustada: Saída: Apresenta lista de edições cadastradas para aquele evento;
-        return edicaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
+    public ResponseEntity<List<Edicao>> lerEdicoesDeUmEvento(@PathVariable Long id) {
+        if (!eventoRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        List<Edicao> edicoes = edicaoRepository.findByEventoId(id);
+        if (edicoes.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(edicoes);
     }
 
     @Operation(summary = "Solicitar dados das categorias da Edição",
@@ -100,15 +113,28 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "404", description = "Edição não encontrada"),
                        @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
-    @GetMapping("/solicitar_dados_categoria/{id}")
-    public Edicao solicitarDadosCategoria (@PathVariable Long id, @PathVariable String categoria){
-        //Implementação a ser ajustada:
+    @GetMapping("/solicitar_dados_categoria/{id}/{categoria}")
+    public ResponseEntity<?> solicitarDadosCategoria(@PathVariable Long id, @PathVariable String categoria) {
         //Entrada: Receber categoria (chamadaTrabalhos, prazosEvento, informacoesInscricoes ou listaOrganizadores);
-        //Saída: Retornar os dados já cadastrados daquela categoria na Edição;
+        Edicao edicao = edicaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Edição não encontrada com o id: " + id));
 
+        switch (categoria.toLowerCase()) {
+            case "chamadatrabalhos":
+                return ResponseEntity.ok(edicao.getChamadaTrabalhos());
 
-        return edicaoRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Edição não encontrado com o id: " + id));
+            case "prazoevento":
+                return ResponseEntity.ok(edicao.getPrazoSubmissãoTrabalhos());
+
+            case "informacoesinscricoes":
+                return ResponseEntity.ok(edicao.getLinkSistemaInscricoes());
+
+            case "listaorganizadores":
+                return ResponseEntity.ok(edicao.getMembrosOrganizacao());
+
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Categoria inválida: " + categoria);
+        }
     }
 
     @Operation(summary = "Atualizar Edição",
@@ -122,13 +148,27 @@ public class EdicaoController {
                        @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
                })
     @PutMapping("/editar/{id}")
-    public Edicao editarEdicao (@PathVariable Long id, @RequestBody Edicao edicao){
-        //Implementação a ser ajustada:
-        //Entrada: Receber os atributos da Edição de acordo com a categoria escolhida;
-        //Saída: efetuar o registro/alteração da informação no banco de dados;
+    public ResponseEntity<Edicao> editarEdicao(@PathVariable Long id, @RequestBody Edicao edicao) {
+        //Entrada: Receber os atributos da Edição de uma categoria colocada no body;
+        Edicao edicaoExistente = edicaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Edição não encontrada com o id: " + id));
 
-        edicao.setId(id);
-        return edicaoRepository.save(edicao);
+        if (edicao.getChamadaTrabalhos() != null) {
+            edicaoExistente.setChamadaTrabalhos(edicao.getChamadaTrabalhos());
+        }
+        if (edicao.getPrazoSubmissãoTrabalhos() != null) {
+            edicaoExistente.setPrazoSubmissãoTrabalhos(edicao.getPrazoSubmissãoTrabalhos());
+        }
+        if (edicao.getLinkSistemaInscricoes() != null) {
+            edicaoExistente.setLinkSistemaInscricoes(edicao.getLinkSistemaInscricoes());
+        }
+        if (edicao.getMembrosOrganizacao() != null) {
+            edicaoExistente.setMembrosOrganizacao(edicao.getMembrosOrganizacao());
+        }
+
+        Edicao edicaoAtualizada = edicaoRepository.save(edicaoExistente);
+
+        return ResponseEntity.ok(edicaoAtualizada);
     }
 
     @Operation(summary = "Obter Edição por ID",
