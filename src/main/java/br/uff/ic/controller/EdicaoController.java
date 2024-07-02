@@ -7,6 +7,7 @@ import br.uff.ic.model.Usuario;
 import br.uff.ic.repository.EdicaoRepository;
 import br.uff.ic.repository.EventoRepository;
 import br.uff.ic.repository.UsuarioRepository;
+import br.uff.ic.services.AutenticacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/edicao")
 public class EdicaoController {
+
+    @Autowired
+    private AutenticacaoService autenticacaoService;
 
     @Autowired
     private EdicaoRepository edicaoRepository;
@@ -36,8 +42,8 @@ public class EdicaoController {
                        "Pré-condições: Evento já deve ter sido cadastrado;",
                responses = {
                        @ApiResponse(responseCode = "201", description = "Edição criada com sucesso"),
-                       @ApiResponse(responseCode = "400", description = "Dados inválidos"),
-                       @ApiResponse(responseCode = "405", description = "Usuário não autorizado")
+                       @ApiResponse(responseCode = "404", description = "Dados inválidos"),
+                       @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
                })
     @PostMapping("/cadastrar")
     public ResponseEntity<Edicao> cadastrarEdicao(@RequestBody EdicaoCadastrarJSON edicaoCadastrarJSON) {
@@ -72,13 +78,26 @@ public class EdicaoController {
     public ResponseEntity<Edicao> configurarOrganizadorEdicao(@PathVariable Long id, @PathVariable Long idUsuario) {
         Optional<Edicao> edicaoOptional = edicaoRepository.findById(id);
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(idUsuario);
+        
 
         if (!edicaoOptional.isPresent() || !usuarioOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
+        autenticacaoService.updateRoles(idUsuario, "ROLE_ORGANIZER");
+
+
         Edicao edicao = edicaoOptional.get();
-        edicao.setOrganizador(usuarioOptional.get());
+        List<Usuario> membros = edicao.getOrganizadores();
+
+        boolean contains = membros.stream()
+                .map(Usuario::getId)
+                .anyMatch(userId -> userId == idUsuario);
+
+        if(!contains){
+            membros.add(usuarioOptional.get());
+            edicao.setOrganizadores(membros);
+        }
 
         Edicao savedEdicao = edicaoRepository.save(edicao);
         return ResponseEntity.status(HttpStatus.OK).body(savedEdicao);

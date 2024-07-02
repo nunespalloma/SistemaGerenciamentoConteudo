@@ -56,9 +56,9 @@ public class AutenticacaoController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/papeis/{userId}")
-    public ResponseEntity<Usuario> updateRoles(@PathVariable Long userId, @RequestBody List<String> roles) {
+    public ResponseEntity<Usuario> updateRoles(@PathVariable Long userId, @RequestBody String role) {
         System.out.println("Update User");
-        Usuario updatedUser = autenticacaoService.updateRoles(userId, roles);
+        Usuario updatedUser = autenticacaoService.updateRoles(userId, role);
         return ResponseEntity.ok(updatedUser);
     }
 
