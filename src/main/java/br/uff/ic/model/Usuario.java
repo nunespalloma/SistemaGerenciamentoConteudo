@@ -41,12 +41,23 @@ public class Usuario implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Atividade> favoritos;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "usuario_atividades",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "atividade_id")
+    )
+    private List<Atividade> atividadesFavoritas;
 
     @Override
     public String getPassword() {

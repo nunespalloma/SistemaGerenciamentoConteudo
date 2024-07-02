@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class AutenticacaoService implements UserDetailsService {
@@ -26,11 +27,28 @@ public class AutenticacaoService implements UserDetailsService {
         return repository.findByEmail(username);
     }
 
-    public Usuario updateRoles(Long userId, List<String> roles) {
+    public Usuario updateRoles(Long userId, String role) {
         Usuario usuario = repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-        usuario.setRoles(roles);
+       // usuario.setRoles(roles);
+        List<String> userRoles = usuario.getRoles();
+
+        boolean contains = userRoles.stream()
+                .map(papel->papel)
+                .anyMatch(userRole -> userRole.equals(role));
+
+        if(!contains){
+            userRoles.add(role);
+            usuario.setRoles(userRoles);
+        }
         return repository.save(usuario);
     }
+
+//    public List<String> findRolesByUserId(Long userId) {
+//        Usuario usuario = repository.findById(userId)
+//                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+//
+//        return usuario.getRoles();
+//    }
 
     public Usuario registrarUsuario(Usuario usuario, List<String> roles) {
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));

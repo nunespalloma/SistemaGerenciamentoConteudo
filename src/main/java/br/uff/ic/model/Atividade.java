@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,4 +48,7 @@ public class Atividade {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    @ManyToMany(mappedBy = "atividadesFavoritas")
+    private List<Usuario> usuariosQueFavoritaram;
 }

@@ -28,17 +28,26 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests( authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
+<<<<<<< HEAD
+                                .requestMatchers("/espaco/**").hasRole("ORGANIZER")
+                                .requestMatchers("/atividade/**").hasRole("ORGANIZER")
+=======
 
-//                                .requestMatchers(HttpMethod.POST, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.PUT, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.DELETE, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.PUT, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.DELETE, "/atividade/**").permitAll()
+                                // Autorizações da Controller Espaco
+                                .requestMatchers(HttpMethod.GET, "/espaco/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/espaco/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.PUT, "/espaco/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.DELETE, "/espaco/**").hasRole("ORGANIZER")
 
+                                // Autorizações da Controller Atividade
+                                .requestMatchers(HttpMethod.GET, "/atividade/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/atividade/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.PUT, "/atividade/**").hasRole("ORGANIZER")
+                                .requestMatchers(HttpMethod.DELETE, "/atividade/**").hasRole("ORGANIZER")
 
+                                // Autorizações da Controller Favorito
+                                .requestMatchers("/favorito/**").hasRole("USER")
+>>>>>>> origin/feat-tiago
 
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

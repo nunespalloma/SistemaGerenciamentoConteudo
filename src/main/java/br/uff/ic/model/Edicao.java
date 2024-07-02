@@ -35,9 +35,11 @@ public class Edicao {
     @JsonBackReference
     private Evento evento;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario organizador;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Usuario> organizadores;
+//    @OneToOne
+//    @JoinColumn(name = "usuario_id")
+//    private Usuario organizador;
 
     @OneToMany(mappedBy = "edicao", cascade = CascadeType.ALL)//cascade ALL é para trazer todas as atividades sempre
     // que eu fizer busca por uma edição

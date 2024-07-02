@@ -2,7 +2,6 @@ package br.uff.ic.controller;
 
 import br.uff.ic.model.Atividade;
 import br.uff.ic.model.Espaco;
-import br.uff.ic.repository.AtividadeRepository;
 import br.uff.ic.repository.EspacoRepository;
 import br.uff.ic.services.AtividadeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,11 +10,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("atividade")
@@ -23,6 +24,10 @@ public class AtividadeController {
 
     @Autowired
     private AtividadeService atividadeService;
+
+
+    @Autowired
+    private EspacoRepository espacoRepository;
 
     @Operation(
             summary = "Criar nova Atividade",
@@ -34,13 +39,22 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "403", description = "Usuário não autorizado"),
                     @ApiResponse(responseCode = "404", description = "Espaço não encontrado")
             })
-    // TODO: Adicionar a anotação @PreAuthorize("hasRole('ORGANIZADOR')") para restringir o acesso a apenas usuários com a role ORGANIZADOR
-    // TODO: Implrementar a lógica para verificar se o espaço informado na atividade existe no sistema
     @PostMapping("/criar")
-    public ResponseEntity<?> createAtividade(@Valid @RequestBody Atividade atividade, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + bindingResult.getAllErrors());
+    public ResponseEntity<?> createAtividade(@Valid @RequestBody Atividade atividade) {
+
+        if (atividade.getEspaco() == null || atividade.getEspaco().getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("O campo 'espaco' ou 'espaco.id' está nulo. É necessário pelo menos um espaço para criar uma atividade.");
         }
+
+        Long espacoId = atividade.getEspaco().getId();
+        //  Optional ajuda a evitar erros de NullPointerException
+        Optional<Espaco> espacoOptional = espacoRepository.findById(espacoId);
+
+        if (espacoOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Espaço não encontrado.");
+        }
+
+        atividade.setEspaco(espacoOptional.get());
         Atividade createdAtividade = atividadeService.save(atividade);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAtividade);
     }
@@ -54,12 +68,10 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
             })
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> updateAtividade(@PathVariable Long id, @Valid @RequestBody Atividade atividade, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + bindingResult.getAllErrors());
-        }
+    public ResponseEntity<?> updateAtividade(@PathVariable Long id, @Valid @RequestBody Atividade atividade) {
 
         atividade.setId(id);
+
         Atividade updatedAtividade = atividadeService.save(atividade);
         return ResponseEntity.ok(updatedAtividade);
     }
@@ -72,8 +84,13 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "404", description = "Atividades não encontradas")
             })
     @GetMapping("/todas")
-    public ResponseEntity<List<Atividade>> getAllAtividades() {
+    public ResponseEntity<?> getAllAtividades() {
         List<Atividade> atividades = atividadeService.findAll();
+
+        if (atividades.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma atividade encontrada.");
+        }
+
         return ResponseEntity.ok(atividades);
     }
 
@@ -87,8 +104,12 @@ public class AtividadeController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getAtividadeById(@PathVariable Long id) {
         Optional<Atividade> atividade = atividadeService.findById(id);
-        return atividade.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        if (atividade.isPresent()) {
+            return ResponseEntity.ok(atividade.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Atividade não encontrada.");
+        }
     }
 
     @Operation(
@@ -99,7 +120,13 @@ public class AtividadeController {
                     @ApiResponse(responseCode = "404", description = "Atividade não encontrada")
             })
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deleteAtividade(@PathVariable Long id) {
+    public ResponseEntity<?> deleteAtividade(@PathVariable Long id) {
+        Optional<Atividade> atividadeOptional = atividadeService.findById(id);
+
+        if (atividadeOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Atividade não encontrada.");
+        }
+
         atividadeService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
