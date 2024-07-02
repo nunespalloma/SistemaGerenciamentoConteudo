@@ -28,17 +28,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests( authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
-
-//                                .requestMatchers(HttpMethod.POST, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.PUT, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.DELETE, "/espaco/**").permitAll()
-//                                .requestMatchers(HttpMethod.GET, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.POST, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.PUT, "/atividade/**").permitAll()
-//                                .requestMatchers(HttpMethod.DELETE, "/atividade/**").permitAll()
-
-
+                                .requestMatchers("/espaco/**").hasRole("ORGANIZER")
+                                .requestMatchers("/atividade/**").hasRole("ORGANIZER")
 
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
