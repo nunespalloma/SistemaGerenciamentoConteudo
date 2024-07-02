@@ -1,7 +1,7 @@
 package br.uff.ic.config;
 
-import br.uff.ic.model.Usuario;
-import br.uff.ic.repository.UsuarioRepository;
+import br.uff.ic.model.*;
+import br.uff.ic.repository.*;
 import br.uff.ic.services.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Collections;
+import java.util.Date;
 
 @Configuration
 public class AdminInitializer {
@@ -18,6 +19,18 @@ public class AdminInitializer {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EventoRepository eventoRepository;
+
+    @Autowired
+    private EdicaoRepository edicaoRepository;
+
+    @Autowired
+    private EspacoRepository espacoRepository;
+
+    @Autowired
+    private AtividadeRepository atividadeRepository;
 
     @Bean
     CommandLineRunner init() {
@@ -52,7 +65,31 @@ public class AdminInitializer {
                 autenticacaoService.registrarUsuario(user, Collections.singletonList("ROLE_USER"));
                 System.out.println("Common user created");
             }
+            Evento evento = new Evento();
+            evento.setNome("Evento Principal");
+            evento.setDescricao("Descrição do Evento Principal");
+            evento.setSigla("EVP");
+            eventoRepository.save(evento);
 
+            Edicao edicao = new Edicao();
+            edicao.setNumero(1);
+            edicao.setAno(2024);
+            edicao.setDataInicial(new Date());
+            edicao.setDataFinal(new Date());
+            edicao.setCidade("Cidade Exemplo");
+            edicao.setEvento(evento);
+            edicaoRepository.save(edicao);
+
+            Espaco espaco = new Espaco();
+            espaco.setNome("Espaço Principal");
+            espacoRepository.save(espaco);
+
+            Atividade atividade = new Atividade();
+            atividade.setNome("Atividade Exemplo");
+            atividade.setDescricao("Descrição da Atividade Exemplo");
+            atividade.setEdicao(edicao);
+            atividade.setEspaco(espaco);
+            atividadeRepository.save(atividade);
         };
     }
 }

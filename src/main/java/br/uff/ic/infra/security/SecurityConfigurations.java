@@ -42,7 +42,7 @@ public class SecurityConfigurations {
                                 .requestMatchers(HttpMethod.DELETE, "/atividade/**").hasRole("ORGANIZER")
 
                                 // Autorizações da Controller Favorito
-                                .requestMatchers("/favorito/**").permitAll()
+                                .requestMatchers("/favorito/**").hasRole("USER")
 
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
