@@ -20,7 +20,7 @@ O presente projeto foi criado com a finalidade de obtenção parcial de nota par
 - Rode o projeto, verifique se as tabelas foram criadas corretamente no MySQL; caso sim, com o projeto ainda rodando, acesse a documentação swagger pelo link abaixo.
 
 ## Localização do arquivo JSON para teste dos endpoints
-- SistemaGerenciamentoConteudo/postman/Projeto_SBRC.json
+SistemaGerenciamentoConteudo/postman/SBRC_Collection.json
 
 ## Link para acesso à documentação swagger (atualizada)
 http://localhost:8080/swagger-ui/index.html
