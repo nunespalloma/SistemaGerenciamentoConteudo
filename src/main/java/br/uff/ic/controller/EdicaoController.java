@@ -42,7 +42,7 @@ public class EdicaoController {
                        "Pré-condições: Evento já deve ter sido cadastrado;",
                responses = {
                        @ApiResponse(responseCode = "201", description = "Edição criada com sucesso"),
-                       @ApiResponse(responseCode = "404", description = "Dados inválidos"),
+                       @ApiResponse(responseCode = "400", description = "Dados inválidos"),
                        @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
                })
     @PostMapping("/cadastrar")

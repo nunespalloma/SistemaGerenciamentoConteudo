@@ -7,6 +7,8 @@ import br.uff.ic.model.Usuario;
 import br.uff.ic.service.FavoritoService;
 import br.uff.ic.repository.AtividadeRepository;
 import br.uff.ic.repository.UsuarioRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
@@ -29,6 +31,12 @@ public class FavoritoController {
     @Autowired
     private FavoritoService favoritoService;
 
+    @Operation(summary = "Favoritar/Desfavoritar Atividade",
+            description = "Favorita/Desfavorita uma Atividade selecionada pelo Usuario com base no ID informado. Este endpoint só pode ser utilizado pelo Usuario.",
+            responses = {
+                    @ApiResponse(responseCode = "404", description = "Atividade não encontrada"),
+                    @ApiResponse(responseCode = "403", description = "Usuário não autorizado")
+            })
     @PostMapping("/{idAtividade}")
     public ResponseEntity<List<Atividade>> favoritar( HttpServletRequest request,@PathVariable Long idAtividade){
         String token = request.getHeader("Authorization").substring(7);
