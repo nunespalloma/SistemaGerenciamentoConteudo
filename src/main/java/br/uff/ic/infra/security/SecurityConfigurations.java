@@ -28,10 +28,6 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests( authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
-<<<<<<< HEAD
-                                .requestMatchers("/espaco/**").hasRole("ORGANIZER")
-                                .requestMatchers("/atividade/**").hasRole("ORGANIZER")
-=======
 
                                 // Autorizações da Controller Espaco
                                 .requestMatchers(HttpMethod.GET, "/espaco/**").permitAll()
@@ -47,7 +43,6 @@ public class SecurityConfigurations {
 
                                 // Autorizações da Controller Favorito
                                 .requestMatchers("/favorito/**").hasRole("USER")
->>>>>>> origin/feat-tiago
 
                                 .requestMatchers(HttpMethod.POST, "/autenticacao/registrar").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
@@ -55,6 +50,9 @@ public class SecurityConfigurations {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/organizador").hasRole("ORGANIZER")
                                 .requestMatchers("/user/").hasRole("USER")
+
+                                //Autorizações da Controller Evento
+                                .requestMatchers(HttpMethod.POST, "/evento/**").hasRole("ADMIN")
 
                                 //Autorizações da Controller Edicao
                                 .requestMatchers(HttpMethod.POST, "/edicao/cadastrar").hasRole("ADMIN")

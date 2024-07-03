@@ -41,9 +41,9 @@ public class Edicao {
 //    @JoinColumn(name = "usuario_id")
 //    private Usuario organizador;
 
-    @OneToMany(mappedBy = "edicao", cascade = CascadeType.ALL)//cascade ALL é para trazer todas as atividades sempre
-    // que eu fizer busca por uma edição
-    private List<Atividade> atividades;
+//    @OneToMany(mappedBy = "edicao", cascade = CascadeType.ALL)//cascade ALL é para trazer todas as atividades sempre
+//    // que eu fizer busca por uma edição
+//    private List<Atividade> atividades;
 
     private String chamadaTrabalhos; //A chamada de trabalhos do evento é um texto que descreve o tipo de trabalhos
     // que serão aceitos pelo evento;
